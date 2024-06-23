@@ -14,13 +14,15 @@
     "plain-text",
     "json"
   ],
-  "author": "Carlos Castañeda",
+  "author": "Frank Acosta",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "bootstrap": "^5.3.3",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.18.3",
+    "method-override": "^3.0.0",
     "pg": "^8.12.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3"
