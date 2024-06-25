@@ -28,15 +28,64 @@
                     <input type="hidden" name="id" value="<%= todo.id %>">
                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                   </form>
-                <a href="/todos/<%= todo.id %>/edit" class="btn btn-primary btn-sm float-end">
+                  <button type="button" class="btn btn-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editTodoModal" data-todo-id="<%= todo.id %>" data-todo-title="<%= todo.title %>" data-todo-completed="<%= todo.completed %>">
                     Modificar
-                </a>
+                </button>
               </li>
             <% }) %>
           </ul>
     </div>
+
+    
+    <div class="modal fade" id="editTodoModal" tabindex="-1" aria-labelledby="editTodoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">  
+              <h5 class="modal-title" id="editTodoModalLabel">Editar Tarea</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editTodoForm" action="/api/v1/todos/modify" method="POST">
+                  <input type="hidden" name="id" id="editTodoId">
+                  <div class="mb-3">
+                      <label for="editTodoTitle" class="form-label">Título</label>
+                      <input type="text" class="form-control" id="editTodoTitle" name="title" required>
+                  </div>
+                  <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="editTodoCompleted" name="completed">
+                      <label class="form-check-label" for="editTodoCompleted">Completado</label>
+                  </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="submit" form="editTodoForm" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+          var editTodoModal = document.getElementById('editTodoModal');
+          editTodoModal.addEventListener('show.bs.modal', function (event) {
+            var buttonModifyTodo = event.relatedTarget;
+            var todoIdForModify = buttonModifyTodo.getAttribute('data-todo-id');
+            var todoOldTitle = buttonModifyTodo.getAttribute('data-todo-title');
+            var todoCompletedChecked = buttonModifyTodo.getAttribute('data-todo-completed') === 'true';
+  
+            var modalTitleInput = editTodoModal.querySelector('#editTodoTitle');
+            var modalCompletedInput = editTodoModal.querySelector('#editTodoCompleted');
+            var modalIdInput = editTodoModal.querySelector('#editTodoId');
+  
+            modalTitleInput.value = todoOldTitle;
+            modalCompletedInput.checked = todoCompletedChecked;
+            modalIdInput.value = todoIdForModify;
+          });
+        });
+      </script>
 </body>
 </html>

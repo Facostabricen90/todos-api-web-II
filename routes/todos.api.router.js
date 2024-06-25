@@ -37,15 +37,14 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update - item
-router.put("/:id", async (req, res) => {
+router.post("/modify", async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, completed } = req.body;
+    const { id, title, completed } = req.body;
     const updatedTodo = await Todo.update({ title, completed: completed === 'on' }, { where: { id } });
     if (updatedTodo[0] === 0) {
       return res.status(404).send("Todo not found");
     }
-    res.send("Todo updated");
+    res.redirect("/todospanel");
   } catch (error) {
     res.status(500).send(error.message);
   }
