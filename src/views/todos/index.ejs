@@ -1,91 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <h1>To-Do List</h1>
-    <form action="/todospanel" method="POST">
-        <label for="title">Título:</label>
-        <input type="text" id="title" name="title" required><br><br>
+  <h1>To-Do List</h1>
+  <form action="/todospanel" method="POST">
+    <label for="title">Título:</label>
+    <input type="text" id="title" name="title" required><br><br>
 
-        <label for="completed">Completado:</label>
-        <input type="checkbox" id="completed" name="completed"><br><br>
+    <label for="completed">Completado:</label>
+    <input type="checkbox" id="completed" name="completed"><br><br>
 
-        <button type="submit">Agregar Tarea</button>
+    <button type="submit">Agregar Tarea</button>
+  </form>
+  <hr>
+  <div class="container mx-auto w-50 mt-3 p-3 border rounded shadow-sm">
+    <h2>Tareas</h2>
+    <form id="searchForm" class="mb-4">
+      <label for="taskId2">ID de la Tarea:</label>
+      <input type="text" id="taskId2" name="taskId" class="form-control" placeholder="Ingresa el ID de la Tarea">
+      <button type="submit" class="btn btn-primary mt-2">Buscar</button>
     </form>
-    <hr>
-    <div class="container mx-auto w-50 mt-3 p-3 border rounded shadow-sm">
-        <h2>Tareas</h2>
-        <ul>
-            <% todos.forEach((todo) => { %>
-              <li class="m-3 p-1">
-                <%= todo.title %> - <%= todo.completed ? "Completado" : "No Completado" %>
-                <form action="/api/v1/todos/delete" method="POST" class="float-end ms-2">
-                    <input type="hidden" name="id" value="<%= todo.id %>">
-                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                  </form>
-                  <button type="button" class="btn btn-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editTodoModal" data-todo-id="<%= todo.id %>" data-todo-title="<%= todo.title %>" data-todo-completed="<%= todo.completed %>">
-                    Modificar
-                </button>
-              </li>
-            <% }) %>
-          </ul>
-    </div>
-
-    
-    <div class="modal fade" id="editTodoModal" tabindex="-1" aria-labelledby="editTodoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">  
-              <h5 class="modal-title" id="editTodoModalLabel">Editar Tarea</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form id="editTodoForm" action="/api/v1/todos/modify" method="POST">
-                  <input type="hidden" name="id" id="editTodoId">
-                  <div class="mb-3">
-                      <label for="editTodoTitle" class="form-label">Título</label>
-                      <input type="text" class="form-control" id="editTodoTitle" name="title" required>
-                  </div>
-                  <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="editTodoCompleted" name="completed">
-                      <label class="form-check-label" for="editTodoCompleted">Completado</label>
-                  </div>
+    <ul id="todosList">
+      <% todos.forEach((todo)=> { %>
+        <li class="m-3 p-1">
+          <%= todo.title %> - <%= todo.completed ? "Completado" : "No Completado" %> 
+          <!-- - ID: <%= todo.id %> --profesor si desea ver el index para buscarlo mas facilmente descomente esta linea-->
+              <form action="/api/v1/todos/delete" method="POST" class="float-end ms-2">
+                <input type="hidden" name="id" value="<%= todo.id %>">
+                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
               </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="submit" form="editTodoForm" class="btn btn-primary">Guardar</button>
-            </div>
-          </div>
-        </div>
-    </div>
+              <button type="button" class="btn btn-primary btn-sm float-end" data-bs-toggle="modal"
+                data-bs-target="#editTodoModal" data-todo-id="<%= todo.id %>" data-todo-title="<%= todo.title %>"
+                data-todo-completed="<%= todo.completed %>">
+                Modificar
+              </button>
+        </li>
+        <% }) %>
+    </ul>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-          var editTodoModal = document.getElementById('editTodoModal');
-          editTodoModal.addEventListener('show.bs.modal', function (event) {
-            var buttonModifyTodo = event.relatedTarget;
-            var todoIdForModify = buttonModifyTodo.getAttribute('data-todo-id');
-            var todoOldTitle = buttonModifyTodo.getAttribute('data-todo-title');
-            var todoCompletedChecked = buttonModifyTodo.getAttribute('data-todo-completed') === 'true';
-  
-            var modalTitleInput = editTodoModal.querySelector('#editTodoTitle');
-            var modalCompletedInput = editTodoModal.querySelector('#editTodoCompleted');
-            var modalIdInput = editTodoModal.querySelector('#editTodoId');
-  
-            modalTitleInput.value = todoOldTitle;
-            modalCompletedInput.checked = todoCompletedChecked;
-            modalIdInput.value = todoIdForModify;
-          });
-        });
-      </script>
+  <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="taskModalLabel">Detalles de la Tarea</h5>
+        </div>
+        <div class="modal-body">
+          <h5 id="taskTitle"></h5>
+          <p id="taskCompleted"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content bg-danger text-white">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">Error</h5>
+        </div>
+        <div class="modal-body">
+          <p id="errorMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editTodoModal" tabindex="-1" aria-labelledby="editTodoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTodoModalLabel">Editar Tarea</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editTodoForm" action="/api/v1/todos/modify" method="POST">
+            <input type="hidden" name="id" id="editTodoId">
+            <div class="mb-3">
+              <label for="editTodoTitle" class="form-label">Título</label>
+              <input type="text" class="form-control" id="editTodoTitle" name="title" required>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="editTodoCompleted" name="completed">
+              <label class="form-check-label" for="editTodoCompleted">Completado</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" form="editTodoForm" class="btn btn-primary">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      var editTodoModal = document.getElementById('editTodoModal');
+      editTodoModal.addEventListener('show.bs.modal', function (event) {
+        var buttonModifyTodo = event.relatedTarget;
+        var todoIdForModify = buttonModifyTodo.getAttribute('data-todo-id');
+        var todoOldTitle = buttonModifyTodo.getAttribute('data-todo-title');
+        var todoCompletedChecked = buttonModifyTodo.getAttribute('data-todo-completed') === 'true';
+
+        var modalTitleInput = editTodoModal.querySelector('#editTodoTitle');
+        var modalCompletedInput = editTodoModal.querySelector('#editTodoCompleted');
+        var modalIdInput = editTodoModal.querySelector('#editTodoId');
+
+        modalTitleInput.value = todoOldTitle;
+        modalCompletedInput.checked = todoCompletedChecked;
+        modalIdInput.value = todoIdForModify;
+      });
+    });
+
+    document.getElementById('searchForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const taskId = document.getElementById('taskId2').value;
+
+      try {
+        const response = await fetch(`/api/v1/todos/${taskId}`);
+        if (!response.ok) {
+          throw new Error('Tarea no encontrada');
+        }
+
+        const todo = await response.json();
+        document.getElementById('taskTitle').innerText = `Título: ${todo.title}`;
+        document.getElementById('taskCompleted').innerText = `Completado: ${todo.completed ? 'Sí' : 'No'}`;
+
+        $('#taskModal').modal('show');
+      } catch (error) {
+        document.getElementById('errorMessage').innerText = error.message;
+
+        $('#errorModal').modal('show');
+      }
+    });
+  </script>
 </body>
+
 </html>
